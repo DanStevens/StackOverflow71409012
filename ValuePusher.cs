@@ -67,9 +67,13 @@ namespace StackOverflow71409012
 
             using (var pusher = new ValuePusher(receiver, scheduler))
             {
-                scheduler.Start();
-                pusher.Value = 1;
+                // Causes observer (line 25) and subscriber (line 27) to be set up
                 scheduler.AdvanceBy(1);
+
+                pusher.Value = 1;
+
+                // Elapse enough time for sample to allow value through
+                scheduler.AdvanceBy(TimeSpan.FromMilliseconds(50).Ticks);
                 Assert.AreEqual(1, receiver.Value);
             }
         }
